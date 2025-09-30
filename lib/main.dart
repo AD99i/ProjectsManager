@@ -59,7 +59,25 @@ class _MyHomePageState extends State<MyHomePage> {
         leading: Icon(Icons.rocket_launch,color: Colors.white,),
 
       ),
-      body: ListsWithCards()
+      body: ListsWithCards(),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {          });
+        },
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Badge(child: Icon(Icons.work)),
+            label: 'Projets',
+
+          ),
+          NavigationDestination(
+            icon: Badge(child: Icon(Icons.add_circle)),
+            label: 'Contribuer',
+
+          ),
+        ],
+      backgroundColor: Colors.black,
+      ),
     );
   }
 }
