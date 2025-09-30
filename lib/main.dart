@@ -1,113 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:tp/models/Project.dart';
+import 'models/Project.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ProjectManagerApp(),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class ProjectManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Gestion de Projets',
       theme: ThemeData(
-        primaryColor: Colors.indigo,
-        cardTheme: CardThemeData(
-          color: Colors.black87,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.indigo,
+        scaffoldBackgroundColor: const Color(0xffeceaea),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontSize: 16.0, color: Colors.indigo),
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        scaffoldBackgroundColor: Color(0xffeceaea),
-        textTheme: TextTheme(
-          titleMedium: TextStyle(fontSize: 32, color: Colors.white),
-          bodySmall: TextStyle(fontSize: 12, color: Colors.white),
-          bodyMedium: TextStyle(fontSize: 18, color: Colors.white),
-        ),
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: Colors.indigo,
-          elevation: 2,
-          shadowColor: Colors.black,
-
+          foregroundColor: Colors.white,
+          elevation: 1,
         ),
-
       ),
-      home: const MyHomePage(title: 'Mes Projets'),
+      home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class HomeScreen extends StatelessWidget {
+  final List<Project> _projects = [
+    Project(title: 'Projet Mannhattan', desc: 'un projet vraiment énorme'),
+    Project(title: 'Projet important', desc: 'un projet très important'),
+  ];
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(widget.title,style: Theme.of(context).textTheme.titleMedium,)),
-        leading: Icon(Icons.rocket_launch,color: Colors.white,),
-
+        title: const Text("Mes Projets"),
+        centerTitle: true,
+        leading: const Icon(Icons.rocket_launch_rounded),
       ),
-      body: ListsWithCards(),
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {          });
+      body: ListView.builder(
+        itemCount: _projects.length,
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: (context, index) {
+          final project = _projects[index];
+
+          return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              leading: const Icon(Icons.work_outline, color: Colors.indigo),
+              title: Text(project.title),
+              subtitle: Text(project.desc),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {},
+            ),
+          );
         },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Badge(child: Icon(Icons.work)),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: null,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder_open),
             label: 'Projets',
-
           ),
-          NavigationDestination(
-            icon: Badge(child: Icon(Icons.add_circle)),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline),
             label: 'Contribuer',
-
           ),
         ],
-      backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
       ),
     );
   }
 }
-
-class ListsWithCards extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var project1 = Project("Projet 1", "Description du projet 1");
-    var project2 = Project("Projet 2", "Description du projet 2");
-    var project3 = Project("Projet 3", "Description du projet 3");
-
-    List<Project> listData = [project1, project2, project3];
-
-    return ListView.builder(
-      itemCount: listData.length,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: EdgeInsets.all(10.0),
-          child: ListTile(
-            title: Text(listData[index].title,style: Theme.of(context).textTheme.bodyMedium,),
-            subtitle: Text(listData[index].desc,style: Theme.of(context).textTheme.bodySmall),
-            leading: Icon(Icons.work_outline_sharp,color: Theme.of(context).primaryColor,),
-            trailing: Icon(Icons.arrow_forward_ios_sharp, color: Colors.white),
-
-          ),
-        );
-      },
-    );
-  }
-}
-
-
-

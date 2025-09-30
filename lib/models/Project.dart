@@ -1,16 +1,22 @@
-class Project{
-  String _title= "";
-  String _desc = "";
-  Project(this._title, this._desc);
+import 'package:flutter/material.dart';
+
+class Project {
+  String _title;
+  String _desc;
+
+  Project({required String title, required String desc})
+      : _title = title,
+        _desc = desc;
+
+  set title(String value) {
+    _title = value;
+  }
 
   String get title => _title;
+
+  set desc(String value) {
+    _desc = value;
+  }
+
   String get desc => _desc;
-
-  void set title(String newTitle){
-    _title = newTitle;
-  }
-
-  void set desc(String newDesc){
-    _desc = newDesc;
-  }
 }
