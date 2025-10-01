@@ -14,7 +14,7 @@ class ProjectManagerApp extends StatelessWidget {
       title: 'Gestion de Projets',
       theme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.indigo,
+        primaryColor: Colors.indigo,
         scaffoldBackgroundColor: const Color(0xffeceaea),
         textTheme: const TextTheme(
           bodyMedium: TextStyle(fontSize: 16.0, color: Colors.indigo),
@@ -34,16 +34,25 @@ class ProjectManagerApp extends StatelessWidget {
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
 
-  final List<Widget> _pages = [
-    ProjectListView(),
-    ContributionPage(),
-  ];
+  final GlobalKey<_ProjectListViewState> _projectListKey = GlobalKey();
 
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      ProjectListView(key: _projectListKey),
+      ContributionPage(),
+    ];
+  }
 
 
   @override
@@ -55,6 +64,17 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: const Icon(Icons.rocket_launch_rounded),
       ),
       body: _pages[currentPageIndex],
+      floatingActionButton: currentPageIndex == 0
+          ? FloatingActionButton(
+        onPressed: () {
+          _projectListKey.currentState?.addProject();
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColor,
+      )
+          : null,
+
+
       bottomNavigationBar: BottomNavigationBar(
 
         onTap: (int index){
@@ -89,12 +109,31 @@ class ContributionPage extends StatelessWidget {
 
 }
 
-class ProjectListView extends StatelessWidget {
+class ProjectListView extends StatefulWidget {
+  const ProjectListView({Key? key}) : super(key: key);
+
+  @override
+  State<ProjectListView> createState() => _ProjectListViewState();
+}
+
+class _ProjectListViewState extends State<ProjectListView> {
   final List<Project> _projects = [
-    Project(title: 'Projet 1', desc: 'projet 1'),
-    Project(title: 'Projet 2', desc: 'projet 2'),
-    Project(title: 'Projet 3', desc: 'projet 3'),
+    Project(title: 'Projet n° 1', desc: 'Description du projet 1'),
+    Project(title: 'Projet n° 2', desc: 'Description du projet 2'),
+    Project(title: 'Projet n° 3', desc: 'Description du projet 3'),
   ];
+
+  int _projectCounter = 4;
+
+  void addProject() {
+    setState(() {
+      _projects.add(Project(
+        title: 'Projet n° $_projectCounter',
+        desc: 'Description du projet $_projectCounter',
+      ));
+      _projectCounter++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +149,7 @@ class ProjectListView extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: ListTile(
-            leading: Icon(Icons.work_outline, color: Theme.of(context).colorScheme.primary),
+            leading: Icon(Icons.work_outline, color: Theme.of(context).primaryColor),
             title: Text(project.title),
             subtitle: Text(project.desc),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
