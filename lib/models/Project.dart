@@ -1,22 +1,19 @@
-import 'package:flutter/material.dart';
-
 class Project {
-  String _title;
-  String _desc;
+  final String title;
+  final String desc;
+  final DateTime date;
+  final ProjectStatus status;
 
-  Project({required String title, required String desc})
-      : _title = title,
-        _desc = desc;
+  Project({
+    required this.title,
+    required this.desc,
+    required this.date,
+    required this.status,
+  });
+}
 
-  set title(String value) {
-    _title = value;
-  }
-
-  String get title => _title;
-
-  set desc(String value) {
-    _desc = value;
-  }
-
-  String get desc => _desc;
+enum ProjectStatus {
+  enCours,
+  termine,
+  aVenir,
 }
