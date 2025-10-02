@@ -1,19 +1,44 @@
+import 'package:flutter/material.dart';
+
+enum ProjectStatus { enCours, termine, aVenir }
+
 class Project {
-  final String title;
-  final String desc;
-  final DateTime date;
-  final ProjectStatus status;
+  String _title;
+  String _desc;
+  ProjectStatus _status;
+  DateTime? _date;
 
-  Project({
-    required this.title,
-    required this.desc,
-    required this.date,
-    required this.status,
-  });
-}
+  Project(
+      {required String title,
+      required String desc,
+      ProjectStatus status = ProjectStatus.aVenir,
+      DateTime? date})
+      : _title = title,
+        _desc = desc,
+        _status = status,
+        _date = date;
 
-enum ProjectStatus {
-  enCours,
-  termine,
-  aVenir,
+  set title(String value) {
+    _title = value;
+  }
+
+  String get title => _title;
+
+  set desc(String value) {
+    _desc = value;
+  }
+
+  String get desc => _desc;
+
+  set status(ProjectStatus value) {
+    _status = value;
+  }
+
+  ProjectStatus get status => _status;
+
+  set date(DateTime? date) {
+    _date = date;
+  }
+
+  DateTime? get date => _date;
 }
