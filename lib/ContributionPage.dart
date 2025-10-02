@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
-import 'models/Project.dart';
-import 'models/utils.dart';
+import 'model/Project.dart';
+import 'utils/Utils.dart';
 
 class ContributionPage extends StatefulWidget {
   final Function(Project) onProjectSubmitted;
 
-  const ContributionPage({required this.onProjectSubmitted});
+  final Project? project;
+
+  ContributionPage({required this.onProjectSubmitted, this.project});
 
   @override
   _ContributionPageState createState() => _ContributionPageState();
 }
 
 class _ContributionPageState extends State<ContributionPage> {
+
   final _formKey = GlobalKey<FormState>();
+  late Project? project;
   String? _title;
   String? _desc;
   ProjectStatus _status = ProjectStatus.aVenir;
   final TextEditingController _dateController = TextEditingController();
   DateTime? _selectedDate;
+
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -37,7 +42,7 @@ class _ContributionPageState extends State<ContributionPage> {
   Future<void> _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(DateTime.now().year - 1),
       lastDate: DateTime(DateTime.now().year + 2),
     );
@@ -51,7 +56,11 @@ class _ContributionPageState extends State<ContributionPage> {
   @override
   void initState() {
     super.initState();
-    _dateController.text = formatDate(_selectedDate);
+    project = widget.project;
+    if (project != null) {
+      _selectedDate = project!.date;
+      _dateController.text = formatDate(_selectedDate);
+    }
   }
 
   @override
@@ -70,6 +79,7 @@ class _ContributionPageState extends State<ContributionPage> {
           children: [
             TextFormField(
               cursorColor: Colors.black,
+              initialValue: project?.title ?? _title,
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold, // couleur du texte saisi
@@ -88,6 +98,7 @@ class _ContributionPageState extends State<ContributionPage> {
             const SizedBox(height: 16),
             TextFormField(
               maxLines: 4,
+              initialValue: project?.desc ?? _desc,
               style: TextStyle(
                 color: Colors.black, // couleur du texte saisi
               ),
@@ -103,7 +114,7 @@ class _ContributionPageState extends State<ContributionPage> {
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<ProjectStatus>(
-              value: _status,
+              initialValue: project?.status ?? _status,
               style: TextStyle(
                 color: Colors.black,
               ),

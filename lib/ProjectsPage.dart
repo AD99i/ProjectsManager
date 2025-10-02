@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'models/Project.dart';
+import 'package:go_router/go_router.dart';
+import 'model/Project.dart';
+
 
 class ProjectsPage extends StatelessWidget {
   final List<Project> _projects;
@@ -25,7 +27,9 @@ class ProjectsPage extends StatelessWidget {
             title: Text(project.title),
             subtitle: Text(project.desc),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
+            onTap: () {
+              context.go('/details', extra: project);
+            },
           ),
         );
       },

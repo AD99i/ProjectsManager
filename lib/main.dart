@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'model/Project.dart';
 import 'ContributionPage.dart';
 import 'ProjectsPage.dart';
-import 'models/Project.dart';
+import 'ProjectDetailsPage.dart';
 
 void main() {
   runApp(
@@ -9,11 +11,38 @@ void main() {
   );
 }
 
+final GoRouter _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) {
+        //Project? project = state.extra as Project;
+        return HomeScreen();
+      },
+      routes: [
+        GoRoute(
+            path: 'details',
+            builder: (context, state) {
+              Project project = state.extra as Project;
+              return ProjectDetailsPage(project: project);
+            }),
+        GoRoute(
+            path: 'update',
+            builder: (context, state) {
+              Project project = state.extra as Project;
+              return EditProject(context, project: project,);
+            })
+      ],
+    ),
+  ],
+);
+
 class ProjectManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Gestion de Projets',
+      routerConfig: _router,
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.indigo,
@@ -27,13 +56,13 @@ class ProjectManagerApp extends StatelessWidget {
           elevation: 1,
         ),
       ),
-      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+  
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -42,7 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Project> _projects = [
-    Project(title: 'Projet Mannhattan', desc: 'un projet vraiment énorme'),
+    Project(
+        title: 'Projet Mannhattan',
+        desc: 'un projet vraiment énorme',
+        date: DateTime(2025, 12, 25)),
     Project(title: 'Projet important', desc: 'un projet très important'),
   ];
 
@@ -51,14 +83,19 @@ class _HomeScreenState extends State<HomeScreen> {
       _selectedIndex = index;
     });
   }
+  
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onSubmit(Project project) {
     setState(() {
       _projects.add(project);
       _selectedIndex = 0;
     });
-	
-	ScaffoldMessenger.of(context).showSnackBar(
+
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Projet "${project.title}" ajouté !')),
     );
   }
