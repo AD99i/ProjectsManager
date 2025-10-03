@@ -1,12 +1,25 @@
 class Task {
-  String title;
-  bool completed ;
-  List<String>? details;
+  final String _name;
+  bool _isCompleted;
+  List<String> _details = [];
 
-  Task({required this.title, required this.completed, this.details});
+  Task(this._name, {bool isCompleted = false}) : _isCompleted = isCompleted;
 
-  Task.fromJson(Map<String, dynamic> json):
-      this.title = json['title'],
-      this.completed = json['completed'],
-      this.details = json['details'];
+  String get name => _name;
+
+  bool get isCompleted => _isCompleted;
+
+  set isCompleted(bool value) {
+    _isCompleted = value;
+  }
+
+  List<String> get details => _details;
+
+  static Task fromJson(Map<String, dynamic> json) {
+    return Task(json['title'], isCompleted: json['completed']);
+  }
+
+  void addDetail(String detail) {
+    _details.add(detail);
+  }
 }
