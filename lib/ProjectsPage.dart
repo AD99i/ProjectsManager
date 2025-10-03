@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'model/Project.dart';
+import 'package:provider/provider.dart';
+import 'providers/ProjectProvider.dart';
 
 
 class ProjectsPage extends StatelessWidget {
-  final List<Project> _projects;
 
-  const ProjectsPage({required projects}) : _projects = projects;
 
   @override
   Widget build(BuildContext context) {
+
+    final projectProvider = Provider.of<ProjectProvider>(context);
+
     return ListView.builder(
-      itemCount: _projects.length,
+      itemCount: projectProvider.projects.length,
       padding: const EdgeInsets.all(16.0),
       itemBuilder: (context, index) {
-        final project = _projects[index];
+        final project = projectProvider.projects[index];
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0),

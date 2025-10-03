@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'Task.dart';
@@ -5,6 +6,7 @@ import 'Task.dart';
 enum ProjectStatus { enCours, termine, aVenir }
 
 class Project {
+  Key _key;
   String _title;
   String _desc;
   ProjectStatus _status;
@@ -19,8 +21,11 @@ class Project {
       : _title = title,
         _desc = desc,
         _status = status,
-        _date = date;
+        _date = date,
+        _key = UniqueKey()
+  ;
 
+  Key get key => _key;
 
   set title(String value) {
     _title = value;

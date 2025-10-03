@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/ProjectProvider.dart';
+import 'package:go_router/go_router.dart';
 import 'model/Project.dart';
 import 'utils/Utils.dart';
 
 class ContributionPage extends StatefulWidget {
-  final Function(Project) onProjectSubmitted;
 
   final Project? project;
 
-  ContributionPage({required this.onProjectSubmitted, this.project});
+  ContributionPage({this.project});
 
   @override
   _ContributionPageState createState() => _ContributionPageState();
@@ -27,15 +29,41 @@ class _ContributionPageState extends State<ContributionPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final project = Project(
-        title: _title ?? '',
-        desc: _desc ?? '',
-        status: _status,
-        date: _selectedDate,
-      );
 
-      widget.onProjectSubmitted(project);
-      _formKey.currentState!.reset();
+      if (project != null) {
+
+        project!.title = _title!;
+        project!.desc = _desc!;
+        project!.status = _status;
+        project!.date = _selectedDate!;
+
+        Provider.of<ProjectProvider>(context, listen: false).updateProject(project!);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Projet "${project!.title}" modifié !')),
+        );
+
+        context.pop();
+
+      } else {
+        final project = Project(
+          title: _title ?? '',
+          desc: _desc ?? '',
+          status: _status,
+          date: _selectedDate,
+        );
+
+        Provider.of<ProjectProvider>(context).addProject(project);
+
+        //widget.onProjectSubmitted(project);
+
+
+        _formKey.currentState!.reset();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Projet "${project.title}" ajouté !')),
+        );
+      }
     }
   }
 

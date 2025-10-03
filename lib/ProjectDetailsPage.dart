@@ -198,7 +198,7 @@ class EditProject extends StatelessWidget {
         title: Text(_project.title),
         centerTitle: true,
       ),
-      body: ContributionPage(onProjectSubmitted: _onUpdate, project: _project),
+      body: ContributionPage(project: _project),
     );
   }
 }

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'model/Project.dart';
 import 'ContributionPage.dart';
 import 'ProjectsPage.dart';
 import 'ProjectDetailsPage.dart';
+import 'providers/ProjectProvider.dart';
 
 void main() {
   runApp(
-    ProjectManagerApp(),
+    ChangeNotifierProvider(
+      create: (_) => ProjectProvider(),
+      child: ProjectManagerApp(),
+    )
   );
 }
 
@@ -40,6 +45,9 @@ final GoRouter _router = GoRouter(
 class ProjectManagerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+
+
     return MaterialApp.router(
       title: 'Gestion de Projets',
       routerConfig: _router,
@@ -70,13 +78,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Project> _projects = [
-    Project(
-        title: 'Projet Mannhattan',
-        desc: 'un projet vraiment énorme',
-        date: DateTime(2025, 12, 25)),
-    Project(title: 'Projet important', desc: 'un projet très important'),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -89,19 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void _onSubmit(Project project) {
-    setState(() {
-      _projects.add(project);
-      _selectedIndex = 0;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Projet "${project.title}" ajouté !')),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final projectProvider = Provider.of<ProjectProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_selectedIndex == 0 ? "Mes Projets" : "Contribuer"),
@@ -109,16 +103,15 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: const Icon(Icons.rocket_launch_rounded),
       ),
       body: _selectedIndex == 0
-          ? ProjectsPage(projects: _projects)
-          : ContributionPage(onProjectSubmitted: _onSubmit),
+          ? ProjectsPage()
+          : ContributionPage(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         tooltip: 'Adding Project',
         onPressed: () {
           setState(() {
-            int num = _projects.length + 1;
-            _projects
-                .add(Project(title: 'New Projet $num', desc: 'nouveau projet'));
+            int num = projectProvider.projects.length + 1;
+            projectProvider.addProject(Project(title: 'New Projet $num', desc: 'nouveau projet'));
           });
         },
         child: const Icon(Icons.add, color: Colors.white, size: 28),
